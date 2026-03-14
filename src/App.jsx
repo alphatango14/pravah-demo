@@ -8,16 +8,16 @@ import {
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState(1);
 
-  const nextScreen = () => setCurrentScreen((prev) => Math.min(prev + 1, 8));
+  const nextScreen = () => setCurrentScreen((prev) => Math.min(prev + 1, 9));
   const prevScreen = () => setCurrentScreen((prev) => Math.max(prev - 1, 1));
   const reset = () => setCurrentScreen(1);
 
   // Top Navigation Bar
-  const Header = ({ title, showBack = true, onClose = false }) => (
+  const Header = ({ title, showBack = true, onClose = false, dark = false }) => (
     <div className="flex items-center p-4 bg-transparent z-10 relative">
       {showBack && (
-        <button onClick={prevScreen} className="p-2 -ml-2 rounded-full hover:bg-gray-100 transition-colors">
-          <ArrowLeft className="w-6 h-6 text-slate-800" />
+        <button onClick={prevScreen} className={`p-2 -ml-2 rounded-full transition-colors ${dark ? 'hover:bg-white/10' : 'hover:bg-gray-100'}`}>
+          <ArrowLeft className={`w-6 h-6 ${dark ? 'text-white' : 'text-slate-800'}`} />
         </button>
       )}
       {onClose && (
@@ -25,9 +25,9 @@ export default function App() {
           <X className="w-6 h-6 text-slate-800" />
         </button>
       )}
-      <h1 className="text-lg font-medium text-slate-800 ml-2">{title}</h1>
+      <h1 className={`text-lg font-medium ml-2 ${dark ? 'text-white' : 'text-slate-800'}`}>{title}</h1>
       <div className="flex-1" />
-      <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold border border-blue-200">
+      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold border ${dark ? 'bg-white/20 text-white border-white/30' : 'bg-blue-100 text-blue-600 border-blue-200'}`}>
         J
       </div>
     </div>
@@ -375,23 +375,46 @@ export default function App() {
   // Screen 6: Gate Entry Screen
   const Screen6 = () => (
     <div className="flex flex-col h-full bg-white relative">
-      <Header title="Scan at Gate" showBack={false} onClose={true} />
+      <Header title="Initiate Ride" showBack={false} onClose={true} />
       
       <div className="flex-1 flex flex-col items-center px-6 pt-10 pb-20">
         <p className="text-slate-600 font-medium text-lg mb-8 text-center">
           Hold near the scanner<br/>or scan QR
         </p>
 
-        {/* Dynamic QR */}
+        {/* Dynamic Proper QR */}
         <div className="bg-white p-4 rounded-3xl shadow-xl border border-gray-100 relative mb-12 w-64 h-64 flex flex-col items-center justify-center">
-          {/* Simulated QR Code using a grid of blocks for visual effect */}
-          <div className="grid grid-cols-4 grid-rows-4 gap-1 w-48 h-48 opacity-90">
-             <div className="bg-black rounded-tl-lg rounded-br-lg col-span-2 row-span-2"></div>
-             <div className="bg-black rounded-tr-sm"></div>
-             <div className="bg-black rounded-bl-lg col-span-2 row-span-3"></div>
-             <div className="bg-black rounded-md col-span-2"></div>
-             <div className="bg-black rounded-tl-sm row-span-2"></div>
-             <div className="bg-black rounded-br-lg col-span-3 row-span-2"></div>
+          
+          <div className="relative w-48 h-48 bg-white flex items-center justify-center">
+             {/* QR Position Squares */}
+             <div className="absolute top-0 left-0 w-12 h-12 border-[5px] border-slate-900 flex items-center justify-center rounded-sm"><div className="w-5 h-5 bg-slate-900 rounded-sm"></div></div>
+             <div className="absolute top-0 right-0 w-12 h-12 border-[5px] border-slate-900 flex items-center justify-center rounded-sm"><div className="w-5 h-5 bg-slate-900 rounded-sm"></div></div>
+             <div className="absolute bottom-0 left-0 w-12 h-12 border-[5px] border-slate-900 flex items-center justify-center rounded-sm"><div className="w-5 h-5 bg-slate-900 rounded-sm"></div></div>
+             
+             {/* QR Data Pattern (Deterministic) */}
+             <div className="w-full h-full pt-[2px] pl-[2px] grid grid-cols-12 grid-rows-12 gap-[3px] opacity-90">
+               {Array.from({ length: 144 }).map((_, i) => {
+                 // Skip drawing where position squares or center logo are
+                 const isTopLeft = i % 12 < 4 && Math.floor(i / 12) < 4;
+                 const isTopRight = i % 12 > 7 && Math.floor(i / 12) < 4;
+                 const isBottomLeft = i % 12 < 4 && Math.floor(i / 12) > 7;
+                 const isCenter = i % 12 > 3 && i % 12 < 8 && Math.floor(i / 12) > 3 && Math.floor(i / 12) < 8;
+                 
+                 if (isTopLeft || isTopRight || isBottomLeft || isCenter) return <div key={i} className="opacity-0"></div>;
+                 
+                 const isVisible = (i * 7 + 13) % 5 > 1;
+                 return <div key={i} className={`bg-slate-900 rounded-[1px] ${isVisible ? 'opacity-100' : 'opacity-0'}`}></div>;
+               })}
+             </div>
+
+            {/* DMRC Logo Badge in Center */}
+            <div className="absolute w-14 h-14 bg-white rounded-xl shadow-lg border-2 border-white flex items-center justify-center">
+               <div className="w-10 h-10 rounded-full border-[3px] border-red-600 flex items-center justify-center relative bg-white">
+                  <div className="w-full h-1 bg-red-600 absolute rotate-45"></div>
+                  <div className="w-full h-1 bg-white absolute -rotate-45 z-10"></div>
+                  <div className="w-full h-1 bg-red-600 absolute -rotate-45"></div>
+               </div>
+            </div>
           </div>
           
           {/* Progress bar for refresh */}
@@ -428,8 +451,56 @@ export default function App() {
     </div>
   );
 
-  // Screen 7: Ride Summary
+  // Screen 7: Ride in Progress
   const Screen7 = () => (
+    <div className="flex flex-col h-full bg-slate-900 relative overflow-hidden">
+      <Header title="" showBack={false} dark={true} />
+      
+      {/* Background animated ambiance */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <div className="absolute w-[500px] h-[500px] bg-blue-500 rounded-full blur-3xl -top-32 -left-32 animate-pulse"></div>
+        <div className="absolute w-[400px] h-[400px] bg-purple-500 rounded-full blur-3xl -bottom-32 -right-32 animate-pulse delay-1000"></div>
+      </div>
+
+      <div className="flex-1 flex flex-col items-center justify-center px-6 relative z-10">
+        
+        {/* Boarding Station Badge */}
+        <div className="bg-white/10 backdrop-blur-md px-6 py-3 rounded-full border border-white/20 mb-12 flex items-center gap-3 shadow-xl">
+           <Train className="w-5 h-5 text-blue-300" />
+           <span className="text-white font-medium tracking-wide">Boarding: Andheri</span>
+        </div>
+
+        {/* Pravaah Central Logo / Animation */}
+        <div className="relative flex items-center justify-center mb-16">
+          <div className="absolute w-48 h-48 border-[2px] border-blue-500/20 rounded-full animate-[spin_4s_linear_infinite]">
+            <div className="absolute top-0 left-1/2 w-2 h-2 bg-blue-400 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+          </div>
+          <div className="absolute w-36 h-36 border border-blue-400/40 rounded-full animate-[spin_3s_linear_infinite_reverse]">
+             <div className="absolute bottom-0 left-1/2 w-2 h-2 bg-indigo-400 rounded-full transform -translate-x-1/2 translate-y-1/2"></div>
+          </div>
+          <div className="bg-gradient-to-br from-blue-500 to-indigo-600 w-24 h-24 rounded-full flex flex-col items-center justify-center shadow-[0_0_40px_rgba(59,130,246,0.6)]">
+            <Zap className="w-8 h-8 text-white mb-0.5" />
+            <span className="text-white font-bold text-[10px] tracking-[0.2em]">P.R.A.V.A.H</span>
+          </div>
+        </div>
+
+        <h2 className="text-3xl font-bold text-white mb-3 tracking-tight">Ride in Progress</h2>
+        <p className="text-blue-200/80 text-center font-medium max-w-[260px] text-sm leading-relaxed">
+          Enjoy your journey. Your final fare will be calculated automatically when you exit.
+        </p>
+
+      </div>
+
+      <div className="p-6 relative z-10">
+        <button onClick={nextScreen} className="w-full bg-white/10 hover:bg-white/20 text-white font-medium text-lg py-4 rounded-full backdrop-blur-md border border-white/20 shadow-lg transition-all">
+          Simulate Exit
+        </button>
+      </div>
+    </div>
+  );
+
+  // Screen 8: Ride Summary
+  const Screen8 = () => (
     <div className="flex flex-col h-full bg-[#f8f9fa]">
       <Header title="" showBack={false} />
       <div className="flex-1 px-6 flex flex-col items-center">
@@ -486,8 +557,8 @@ export default function App() {
     </div>
   );
 
-  // Screen 8: End of Day Settlement
-  const Screen8 = () => (
+  // Screen 9: End of Day Settlement
+  const Screen9 = () => (
     <div className="flex flex-col h-full bg-[#f8f9fa]">
       <Header title="Daily Transit Settlement" showBack={false} />
       <div className="flex-1 px-4 overflow-y-auto pb-24">
@@ -564,11 +635,12 @@ export default function App() {
           {currentScreen === 6 && <Screen6 />}
           {currentScreen === 7 && <Screen7 />}
           {currentScreen === 8 && <Screen8 />}
+          {currentScreen === 9 && <Screen9 />}
         </div>
         
         {/* Debug / Nav controls purely for the prototype previewer */}
         <div className="absolute top-2 left-2 z-50 flex gap-1 bg-white/80 p-1 rounded-full text-xs shadow-sm">
-           <span className="px-2 font-mono text-slate-400">{currentScreen}/8</span>
+           <span className="px-2 font-mono text-slate-400">{currentScreen}/9</span>
         </div>
       </div>
     </div>
