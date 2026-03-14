@@ -8,12 +8,14 @@ import {
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState(1);
 
-  // Updated to 10 screens to accommodate the new Exit Gate screen
   const nextScreen = () => setCurrentScreen((prev) => Math.min(prev + 1, 10));
   const prevScreen = () => setCurrentScreen((prev) => Math.max(prev - 1, 1));
   const reset = () => setCurrentScreen(1);
 
-  // Top Navigation Bar
+  // Live URL for Delhi Metro Logo to ensure it loads in the preview sandbox
+  const dmrcLogoUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Delhi_Metro_logo.svg/500px-Delhi_Metro_logo.svg.png";
+
+  // Top Navigation Bar with Fixed Logos
   const Header = ({ title, showBack = true, onClose = false, dark = false }) => (
     <div className="flex items-center p-4 bg-transparent z-10 relative">
       {showBack && (
@@ -30,12 +32,27 @@ export default function App() {
       <div className="flex-1" />
       
       {/* Universal Branding Logos */}
-      <div className="flex items-center gap-2">
-        <div className="bg-white px-1.5 py-1 rounded shadow-sm border border-gray-100 h-8 w-16 flex items-center justify-center">
-          <img src="image_d25383.jpg" alt="PRAVAH" className="h-full w-full object-contain" />
+      <div className="flex items-center gap-1.5">
+        {/* PRAVAH Logo (CSS/SVG to guarantee it renders perfectly) */}
+        <div className="flex items-center gap-1.5 px-2 py-1 bg-white rounded shadow-sm border border-gray-100 h-8">
+          <div className="w-4 h-4 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[3px] flex items-center justify-center">
+            <span className="text-white text-[10px] font-bold italic leading-none">P</span>
+          </div>
+          <span className="text-[10px] font-bold tracking-widest text-slate-800">PRAVAH</span>
         </div>
-        <div className="bg-white px-1.5 py-1 rounded shadow-sm border border-gray-100 h-8 w-16 flex items-center justify-center">
-          <img src="image_d25749.png" alt="Delhi Metro" className="h-full w-full object-contain" />
+        
+        {/* Delhi Metro Logo (Public Web URL) */}
+        <div className="bg-white px-1.5 py-1 rounded shadow-sm border border-gray-100 h-8 w-12 flex items-center justify-center">
+          <img 
+            src={dmrcLogoUrl} 
+            alt="DMRC" 
+            className="h-full w-full object-contain"
+            onError={(e) => {
+              e.target.onerror = null;
+              // Fallback red circle if network blocks wikimedia
+              e.target.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' stroke='red' stroke-width='10' fill='none'/></svg>";
+            }}
+          />
         </div>
       </div>
     </div>
@@ -415,9 +432,9 @@ export default function App() {
                })}
              </div>
 
-            {/* Actual DMRC Logo Badge in Center */}
+            {/* DMRC Logo Badge in Center */}
             <div className="absolute w-14 h-14 bg-white rounded-xl shadow-lg border-2 border-white flex items-center justify-center p-1.5">
-               <img src="image_d25749.png" alt="DMRC Logo" className="w-full h-full object-contain" />
+               <img src={dmrcLogoUrl} alt="DMRC Logo" className="w-full h-full object-contain" />
             </div>
           </div>
           
@@ -474,7 +491,7 @@ export default function App() {
            <span className="text-white font-medium tracking-wide">Journey Started At: Rajiv Chowk</span>
         </div>
 
-        {/* Pravaah Central Logo / Animation */}
+        {/* Pravaah Central Animation */}
         <div className="relative flex items-center justify-center mb-16">
           <div className="absolute w-48 h-48 border-[2px] border-blue-500/20 rounded-full animate-[spin_4s_linear_infinite]">
             <div className="absolute top-0 left-1/2 w-2 h-2 bg-blue-400 rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
@@ -483,8 +500,9 @@ export default function App() {
              <div className="absolute bottom-0 left-1/2 w-2 h-2 bg-indigo-400 rounded-full transform -translate-x-1/2 translate-y-1/2"></div>
           </div>
           
-          <div className="bg-white w-24 h-24 rounded-full flex flex-col items-center justify-center shadow-[0_0_40px_rgba(59,130,246,0.6)] p-3 overflow-hidden">
-            <img src="image_d25383.jpg" alt="PRAVAH" className="w-full h-full object-contain" />
+          <div className="bg-gradient-to-br from-blue-600 to-indigo-800 w-24 h-24 rounded-full flex flex-col items-center justify-center shadow-[0_0_40px_rgba(59,130,246,0.6)] p-3 overflow-hidden">
+            <Zap className="w-8 h-8 text-white mb-0.5" />
+            <span className="text-white font-bold text-[10px] tracking-[0.2em]">PRAVAH</span>
           </div>
         </div>
 
@@ -540,7 +558,7 @@ export default function App() {
 
             {/* Actual DMRC Logo Badge in Center */}
             <div className="absolute w-14 h-14 bg-white rounded-xl shadow-lg border-2 border-white flex items-center justify-center p-1.5">
-               <img src="image_d25749.png" alt="DMRC Logo" className="w-full h-full object-contain" />
+               <img src={dmrcLogoUrl} alt="DMRC Logo" className="w-full h-full object-contain" />
             </div>
           </div>
           
