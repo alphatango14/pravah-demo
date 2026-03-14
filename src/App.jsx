@@ -8,7 +8,8 @@ import {
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState(1);
 
-  const nextScreen = () => setCurrentScreen((prev) => Math.min(prev + 1, 9));
+  // Updated to 10 screens to accommodate the new Exit Gate screen
+  const nextScreen = () => setCurrentScreen((prev) => Math.min(prev + 1, 10));
   const prevScreen = () => setCurrentScreen((prev) => Math.max(prev - 1, 1));
   const reset = () => setCurrentScreen(1);
 
@@ -317,7 +318,7 @@ export default function App() {
             <MapPin className="w-5 h-5 text-blue-600" />
           </div>
           <div>
-            <h1 className="font-bold text-slate-900">Mumbai Metro</h1>
+            <h1 className="font-bold text-slate-900">Delhi Metro</h1>
             <p className="text-xs text-green-600 font-semibold">• Ready to Board</p>
           </div>
         </div>
@@ -467,7 +468,7 @@ export default function App() {
         {/* Boarding Station Badge */}
         <div className="bg-white/10 backdrop-blur-md px-6 py-3 rounded-full border border-white/20 mb-12 flex items-center gap-3 shadow-xl">
            <Train className="w-5 h-5 text-blue-300" />
-           <span className="text-white font-medium tracking-wide">Boarding: Andheri</span>
+           <span className="text-white font-medium tracking-wide">Journey Started At: Rajiv Chowk</span>
         </div>
 
         {/* Pravaah Central Logo / Animation */}
@@ -499,8 +500,80 @@ export default function App() {
     </div>
   );
 
-  // Screen 8: Ride Summary
+  // Screen 8: Gate Exit Screen
   const Screen8 = () => (
+    <div className="flex flex-col h-full bg-white relative">
+      <Header title="Scan to Exit" showBack={false} onClose={true} />
+      
+      <div className="flex-1 flex flex-col items-center px-6 pt-10 pb-20">
+        <p className="text-slate-600 font-medium text-lg mb-8 text-center">
+          Hold near the scanner<br/>or scan QR to complete ride
+        </p>
+
+        {/* Dynamic Proper QR */}
+        <div className="bg-white p-4 rounded-3xl shadow-xl border border-gray-100 relative mb-12 w-64 h-64 flex flex-col items-center justify-center">
+          
+          <div className="relative w-48 h-48 bg-white flex items-center justify-center">
+             {/* QR Position Squares */}
+             <div className="absolute top-0 left-0 w-12 h-12 border-[5px] border-slate-900 flex items-center justify-center rounded-sm"><div className="w-5 h-5 bg-slate-900 rounded-sm"></div></div>
+             <div className="absolute top-0 right-0 w-12 h-12 border-[5px] border-slate-900 flex items-center justify-center rounded-sm"><div className="w-5 h-5 bg-slate-900 rounded-sm"></div></div>
+             <div className="absolute bottom-0 left-0 w-12 h-12 border-[5px] border-slate-900 flex items-center justify-center rounded-sm"><div className="w-5 h-5 bg-slate-900 rounded-sm"></div></div>
+             
+             {/* QR Data Pattern (Deterministic) */}
+             <div className="w-full h-full pt-[2px] pl-[2px] grid grid-cols-12 grid-rows-12 gap-[3px] opacity-90">
+               {Array.from({ length: 144 }).map((_, i) => {
+                 // Skip drawing where position squares or center logo are
+                 const isTopLeft = i % 12 < 4 && Math.floor(i / 12) < 4;
+                 const isTopRight = i % 12 > 7 && Math.floor(i / 12) < 4;
+                 const isBottomLeft = i % 12 < 4 && Math.floor(i / 12) > 7;
+                 const isCenter = i % 12 > 3 && i % 12 < 8 && Math.floor(i / 12) > 3 && Math.floor(i / 12) < 8;
+                 
+                 if (isTopLeft || isTopRight || isBottomLeft || isCenter) return <div key={i} className="opacity-0"></div>;
+                 
+                 const isVisible = (i * 7 + 13) % 5 > 1;
+                 return <div key={i} className={`bg-slate-900 rounded-[1px] ${isVisible ? 'opacity-100' : 'opacity-0'}`}></div>;
+               })}
+             </div>
+
+            {/* DMRC Logo Badge in Center */}
+            <div className="absolute w-14 h-14 bg-white rounded-xl shadow-lg border-2 border-white flex items-center justify-center">
+               <div className="w-10 h-10 rounded-full border-[3px] border-red-600 flex items-center justify-center relative bg-white">
+                  <div className="w-full h-1 bg-red-600 absolute rotate-45"></div>
+                  <div className="w-full h-1 bg-white absolute -rotate-45 z-10"></div>
+                  <div className="w-full h-1 bg-red-600 absolute -rotate-45"></div>
+               </div>
+            </div>
+          </div>
+          
+          {/* Progress bar for refresh */}
+          <div className="absolute -bottom-6 w-48 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+            <div className="h-full bg-blue-500 w-full animate-[shrink_30s_linear_infinite]" style={{ transformOrigin: 'left' }}></div>
+          </div>
+        </div>
+
+        {/* NFC Ripple Indicator */}
+        <div className="relative flex items-center justify-center w-full h-32 cursor-pointer" onClick={nextScreen}>
+          <div className="absolute w-16 h-16 bg-blue-100 rounded-full animate-ping opacity-75"></div>
+          <div className="absolute w-24 h-24 border-2 border-blue-200 rounded-full animate-pulse"></div>
+          <div className="absolute w-32 h-32 border border-blue-100 rounded-full animate-pulse delay-75"></div>
+          <div className="relative bg-white p-4 rounded-full shadow-lg border border-blue-50">
+            <SmartphoneNfc className="w-8 h-8 text-blue-600" />
+          </div>
+        </div>
+        <p className="text-blue-600 font-semibold text-sm mt-4 tracking-wider uppercase">Broadcasting NFC...</p>
+
+      </div>
+      
+      <div className="absolute bottom-6 left-6 right-6 text-center">
+        <p className="text-xs text-slate-400 font-medium mb-4 flex items-center justify-center gap-1">
+          <ShieldCheck className="w-4 h-4" /> Secured via UPI Credit Line
+        </p>
+      </div>
+    </div>
+  );
+
+  // Screen 9: Ride Summary
+  const Screen9 = () => (
     <div className="flex flex-col h-full bg-[#f8f9fa]">
       <Header title="" showBack={false} />
       <div className="flex-1 px-6 flex flex-col items-center">
@@ -519,7 +592,7 @@ export default function App() {
             <div className="flex justify-between items-start mb-6">
               <div>
                 <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-1">Entry</p>
-                <p className="font-bold text-slate-900 text-lg">Andheri</p>
+                <p className="font-bold text-slate-900 text-lg">Rajiv Chowk</p>
                 <p className="text-sm text-slate-500">09:15 AM</p>
               </div>
               <div className="flex flex-col justify-center items-center px-4 mt-4">
@@ -529,14 +602,14 @@ export default function App() {
               </div>
               <div className="text-right">
                 <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-1">Exit</p>
-                <p className="font-bold text-slate-900 text-lg">Bandra</p>
+                <p className="font-bold text-slate-900 text-lg">Guru Dronacharya</p>
                 <p className="text-sm text-slate-500">09:42 AM</p>
               </div>
             </div>
           </div>
           <div className="p-6 bg-slate-50 flex justify-between items-center">
             <span className="font-semibold text-slate-600">Calculated Fare</span>
-            <span className="text-2xl font-bold text-slate-900">₹25</span>
+            <span className="text-2xl font-bold text-slate-900">₹40</span>
           </div>
         </div>
 
@@ -557,8 +630,8 @@ export default function App() {
     </div>
   );
 
-  // Screen 9: End of Day Settlement
-  const Screen9 = () => (
+  // Screen 10: End of Day Settlement
+  const Screen10 = () => (
     <div className="flex flex-col h-full bg-[#f8f9fa]">
       <Header title="Daily Transit Settlement" showBack={false} />
       <div className="flex-1 px-4 overflow-y-auto pb-24">
@@ -575,17 +648,17 @@ export default function App() {
         <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 mb-6 space-y-4">
           <div className="flex justify-between items-center pb-4 border-b border-gray-50">
             <div>
-              <p className="font-semibold text-slate-900">Andheri → Bandra</p>
+              <p className="font-semibold text-slate-900">Rajiv Chowk → Guru Dronacharya</p>
               <p className="text-xs text-slate-500">09:15 AM - 09:42 AM</p>
             </div>
-            <span className="font-semibold text-slate-900">₹25</span>
+            <span className="font-semibold text-slate-900">₹40</span>
           </div>
           <div className="flex justify-between items-center">
             <div>
-              <p className="font-semibold text-slate-900">Bandra → Ghatkopar</p>
+              <p className="font-semibold text-slate-900">Guru Dronacharya → Hauz Khas</p>
               <p className="text-xs text-slate-500">06:30 PM - 07:15 PM</p>
             </div>
-            <span className="font-semibold text-slate-900">₹40</span>
+            <span className="font-semibold text-slate-900">₹25</span>
           </div>
         </div>
 
@@ -636,11 +709,12 @@ export default function App() {
           {currentScreen === 7 && <Screen7 />}
           {currentScreen === 8 && <Screen8 />}
           {currentScreen === 9 && <Screen9 />}
+          {currentScreen === 10 && <Screen10 />}
         </div>
         
         {/* Debug / Nav controls purely for the prototype previewer */}
         <div className="absolute top-2 left-2 z-50 flex gap-1 bg-white/80 p-1 rounded-full text-xs shadow-sm">
-           <span className="px-2 font-mono text-slate-400">{currentScreen}/9</span>
+           <span className="px-2 font-mono text-slate-400">{currentScreen}/10</span>
         </div>
       </div>
     </div>
