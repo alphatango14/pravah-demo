@@ -23,13 +23,20 @@ export default function App() {
       )}
       {onClose && (
         <button onClick={nextScreen} className="p-2 -ml-2 rounded-full hover:bg-gray-100 transition-colors">
-          <X className="w-6 h-6 text-slate-800" />
+          <X className={`w-6 h-6 ${dark ? 'text-white' : 'text-slate-800'}`} />
         </button>
       )}
       <h1 className={`text-lg font-medium ml-2 ${dark ? 'text-white' : 'text-slate-800'}`}>{title}</h1>
       <div className="flex-1" />
-      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold border ${dark ? 'bg-white/20 text-white border-white/30' : 'bg-blue-100 text-blue-600 border-blue-200'}`}>
-        J
+      
+      {/* Universal Branding Logos */}
+      <div className="flex items-center gap-2">
+        <div className="bg-white px-1.5 py-1 rounded shadow-sm border border-gray-100 h-8 w-16 flex items-center justify-center">
+          <img src="image_d25383.jpg" alt="PRAVAH" className="h-full w-full object-contain" />
+        </div>
+        <div className="bg-white px-1.5 py-1 rounded shadow-sm border border-gray-100 h-8 w-16 flex items-center justify-center">
+          <img src="image_d25749.png" alt="Delhi Metro" className="h-full w-full object-contain" />
+        </div>
       </div>
     </div>
   );
@@ -408,13 +415,9 @@ export default function App() {
                })}
              </div>
 
-            {/* DMRC Logo Badge in Center */}
-            <div className="absolute w-14 h-14 bg-white rounded-xl shadow-lg border-2 border-white flex items-center justify-center">
-               <div className="w-10 h-10 rounded-full border-[3px] border-red-600 flex items-center justify-center relative bg-white">
-                  <div className="w-full h-1 bg-red-600 absolute rotate-45"></div>
-                  <div className="w-full h-1 bg-white absolute -rotate-45 z-10"></div>
-                  <div className="w-full h-1 bg-red-600 absolute -rotate-45"></div>
-               </div>
+            {/* Actual DMRC Logo Badge in Center */}
+            <div className="absolute w-14 h-14 bg-white rounded-xl shadow-lg border-2 border-white flex items-center justify-center p-1.5">
+               <img src="image_d25749.png" alt="DMRC Logo" className="w-full h-full object-contain" />
             </div>
           </div>
           
@@ -479,9 +482,9 @@ export default function App() {
           <div className="absolute w-36 h-36 border border-blue-400/40 rounded-full animate-[spin_3s_linear_infinite_reverse]">
              <div className="absolute bottom-0 left-1/2 w-2 h-2 bg-indigo-400 rounded-full transform -translate-x-1/2 translate-y-1/2"></div>
           </div>
-          <div className="bg-gradient-to-br from-blue-500 to-indigo-600 w-24 h-24 rounded-full flex flex-col items-center justify-center shadow-[0_0_40px_rgba(59,130,246,0.6)]">
-            <Zap className="w-8 h-8 text-white mb-0.5" />
-            <span className="text-white font-bold text-[10px] tracking-[0.2em]">P.R.A.V.A.H</span>
+          
+          <div className="bg-white w-24 h-24 rounded-full flex flex-col items-center justify-center shadow-[0_0_40px_rgba(59,130,246,0.6)] p-3 overflow-hidden">
+            <img src="image_d25383.jpg" alt="PRAVAH" className="w-full h-full object-contain" />
           </div>
         </div>
 
@@ -535,13 +538,9 @@ export default function App() {
                })}
              </div>
 
-            {/* DMRC Logo Badge in Center */}
-            <div className="absolute w-14 h-14 bg-white rounded-xl shadow-lg border-2 border-white flex items-center justify-center">
-               <div className="w-10 h-10 rounded-full border-[3px] border-red-600 flex items-center justify-center relative bg-white">
-                  <div className="w-full h-1 bg-red-600 absolute rotate-45"></div>
-                  <div className="w-full h-1 bg-white absolute -rotate-45 z-10"></div>
-                  <div className="w-full h-1 bg-red-600 absolute -rotate-45"></div>
-               </div>
+            {/* Actual DMRC Logo Badge in Center */}
+            <div className="absolute w-14 h-14 bg-white rounded-xl shadow-lg border-2 border-white flex items-center justify-center p-1.5">
+               <img src="image_d25749.png" alt="DMRC Logo" className="w-full h-full object-contain" />
             </div>
           </div>
           
