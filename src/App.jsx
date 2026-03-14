@@ -12,10 +12,7 @@ export default function App() {
   const prevScreen = () => setCurrentScreen((prev) => Math.max(prev - 1, 1));
   const reset = () => setCurrentScreen(1);
 
-  // Live URL for Delhi Metro Logo to ensure it loads in the preview sandbox
-  const dmrcLogoUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Delhi_Metro_logo.svg/500px-Delhi_Metro_logo.svg.png";
-
-  // Top Navigation Bar with Fixed Logos
+  // Top Navigation Bar
   const Header = ({ title, showBack = true, onClose = false, dark = false }) => (
     <div className="flex items-center p-4 bg-transparent z-10 relative">
       {showBack && (
@@ -30,31 +27,6 @@ export default function App() {
       )}
       <h1 className={`text-lg font-medium ml-2 ${dark ? 'text-white' : 'text-slate-800'}`}>{title}</h1>
       <div className="flex-1" />
-      
-      {/* Universal Branding Logos */}
-      <div className="flex items-center gap-1.5">
-        {/* PRAVAH Logo (CSS/SVG to guarantee it renders perfectly) */}
-        <div className="flex items-center gap-1.5 px-2 py-1 bg-white rounded shadow-sm border border-gray-100 h-8">
-          <div className="w-4 h-4 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[3px] flex items-center justify-center">
-            <span className="text-white text-[10px] font-bold italic leading-none">P</span>
-          </div>
-          <span className="text-[10px] font-bold tracking-widest text-slate-800">PRAVAH</span>
-        </div>
-        
-        {/* Delhi Metro Logo (Public Web URL) */}
-        <div className="bg-white px-1.5 py-1 rounded shadow-sm border border-gray-100 h-8 w-12 flex items-center justify-center">
-          <img 
-            src={dmrcLogoUrl} 
-            alt="DMRC" 
-            className="h-full w-full object-contain"
-            onError={(e) => {
-              e.target.onerror = null;
-              // Fallback red circle if network blocks wikimedia
-              e.target.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' stroke='red' stroke-width='10' fill='none'/></svg>";
-            }}
-          />
-        </div>
-      </div>
     </div>
   );
 
@@ -433,8 +405,12 @@ export default function App() {
              </div>
 
             {/* DMRC Logo Badge in Center */}
-            <div className="absolute w-14 h-14 bg-white rounded-xl shadow-lg border-2 border-white flex items-center justify-center p-1.5">
-               <img src={dmrcLogoUrl} alt="DMRC Logo" className="w-full h-full object-contain" />
+            <div className="absolute w-14 h-14 bg-white rounded-xl shadow-lg border-2 border-white flex items-center justify-center">
+               <div className="w-10 h-10 rounded-full border-[3px] border-red-600 flex items-center justify-center relative bg-white">
+                  <div className="w-full h-1 bg-red-600 absolute rotate-45"></div>
+                  <div className="w-full h-1 bg-white absolute -rotate-45 z-10"></div>
+                  <div className="w-full h-1 bg-red-600 absolute -rotate-45"></div>
+               </div>
             </div>
           </div>
           
@@ -506,7 +482,7 @@ export default function App() {
           </div>
         </div>
 
-        <h2 className="text-3xl font-bold text-white mb-3 tracking-tight">Ride in Progress</h2>
+        <h2 className="text-3xl font-bold text-white mb-3 tracking-tight">Have a Nice Trip</h2>
         <p className="text-blue-200/80 text-center font-medium max-w-[260px] text-sm leading-relaxed">
           Enjoy your journey. Your final fare will be calculated automatically when you exit.
         </p>
@@ -556,9 +532,13 @@ export default function App() {
                })}
              </div>
 
-            {/* Actual DMRC Logo Badge in Center */}
-            <div className="absolute w-14 h-14 bg-white rounded-xl shadow-lg border-2 border-white flex items-center justify-center p-1.5">
-               <img src={dmrcLogoUrl} alt="DMRC Logo" className="w-full h-full object-contain" />
+            {/* DMRC Logo Badge in Center */}
+            <div className="absolute w-14 h-14 bg-white rounded-xl shadow-lg border-2 border-white flex items-center justify-center">
+               <div className="w-10 h-10 rounded-full border-[3px] border-red-600 flex items-center justify-center relative bg-white">
+                  <div className="w-full h-1 bg-red-600 absolute rotate-45"></div>
+                  <div className="w-full h-1 bg-white absolute -rotate-45 z-10"></div>
+                  <div className="w-full h-1 bg-red-600 absolute -rotate-45"></div>
+               </div>
             </div>
           </div>
           
